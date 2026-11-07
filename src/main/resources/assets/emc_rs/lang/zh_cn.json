@@ -1,0 +1,18 @@
+{
+  "sidebutton.emc_rs.emc": "EMC 网络",
+  "sidebutton.emc_rs.emc.hint": "点击：状态 / 首次绑定\nShift + 点击：重新绑定主人\nCtrl + 点击：按过滤槽回收网络真实库存",
+  "message.emc_rs.network.bound": "网络 EMC 已绑定到 %s。",
+  "message.emc_rs.network.status": "主人：%s | EMC：%s | 黑名单 买/卖：%s/%s",
+  "message.emc_rs.network.no_network": "这个终端没有连接到 RS 网络。",
+  "message.emc_rs.network.no_permission": "你没有权限修改这个网络的 EMC 设置。",
+  "message.emc_rs.network.no_extract": "你没有权限从这个网络提取物品。",
+  "message.emc_rs.network.rebind_denied": "只有当前 EMC 主人或管理员可以重新绑定。",
+  "message.emc_rs.network.bind_first": "请先正常点击一次 EMC 按钮绑定网络主人。",
+  "message.emc_rs.network.owner_offline": "这个网络的 EMC 主人不在线。",
+  "message.emc_rs.network.no_provider": "无法获取等价交换的知识数据。",
+  "message.emc_rs.network.no_energy": "RS 网络没有运行。",
+  "message.emc_rs.network.no_filter": "请先在终端右侧的 4 个过滤槽里放入至少一个有 EMC 价值、且不在 sell 黑名单里的物品。",
+  "message.emc_rs.network.nothing_to_sell": "网络里没有匹配的可回收库存。",
+  "message.emc_rs.network.bulk_sold": "已回收 %s 个物品，获得 %s EMC。",
+  "gui.emc_rs.emc": "EMC：%s"
+}

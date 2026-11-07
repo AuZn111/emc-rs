@@ -1,0 +1,18 @@
+{
+  "sidebutton.emc_rs.emc": "EMC Network",
+  "sidebutton.emc_rs.emc.hint": "Click: status / bind owner\nShift+Click: rebind owner\nCtrl+Click: recycle filtered network stock",
+  "message.emc_rs.network.bound": "Network EMC bound to %s.",
+  "message.emc_rs.network.status": "Owner: %s | EMC: %s | Blacklist buy/sell: %s/%s",
+  "message.emc_rs.network.no_network": "This terminal is not connected to an RS network.",
+  "message.emc_rs.network.no_permission": "You do not have permission to change this network's EMC settings.",
+  "message.emc_rs.network.no_extract": "You do not have permission to extract from this network.",
+  "message.emc_rs.network.rebind_denied": "Only the current EMC owner or an operator can rebind this network.",
+  "message.emc_rs.network.bind_first": "Click the EMC button normally once to bind the network owner first.",
+  "message.emc_rs.network.owner_offline": "The network's EMC owner is offline.",
+  "message.emc_rs.network.no_provider": "ProjectE knowledge is unavailable.",
+  "message.emc_rs.network.no_energy": "The RS network is not running.",
+  "message.emc_rs.network.no_filter": "Put at least one EMC-valued, non-sell-blacklisted item into the terminal's four filter slots first.",
+  "message.emc_rs.network.nothing_to_sell": "No matching network stock could be recycled.",
+  "message.emc_rs.network.bulk_sold": "Recycled %s items for %s EMC.",
+  "gui.emc_rs.emc": "EMC: %s"
+}

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.wintercogs.emcrs.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ItemStorageCacheMixin",
+    "NetworkMixin",
+    "RootNetworkNodeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
