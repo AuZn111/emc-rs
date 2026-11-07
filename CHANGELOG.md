@@ -4,12 +4,30 @@ All notable changes to EMC × Refined Storage.
 
 ## 3.3.0
 
-- Added a progression gate: until the player has ever obtained a Transmutation Table or Transmutation Tablet, the virtual EMC shop and EMC extraction are locked.
-- Without a table, inserting EMC items records knowledge and stores them normally by default; no EMC is produced (`convertWithoutTable = false`).
-- Unlocking is per player and permanent, detected from inventory, a placed transmutation table, or the ProjectE advancement.
+### Added
+
+- Transmutation Table / Transmutation Tablet progression gate: the virtual EMC shop and EMC extraction are locked until the owner has ever obtained either one.
+- Permanent per-player unlock, detected from the player's inventory, a placed Transmutation Table, or the ProjectE advancement.
 - New `[progression] requireTransmutationTable` and `convertWithoutTable` options.
+
+### Changed
+
+- Without a table, inserting EMC items now records knowledge and stores them normally by default; no EMC is produced (`convertWithoutTable = false`).
 - Bulk recycle and the EMC status message respect the gate.
-- Verified: locked without table, knowledge recorded, no EMC produced, no virtual purchases; after adding a table, purchases and EMC extraction work.
+- Players who already obtained a table/tablet are unaffected and keep the normal automatic buy/sell behavior.
+
+### Kept
+
+- NBT / enchantment protection from 3.2.2.
+- EMC-less items are never consumed.
+- Live EMC balance and incremental quantity sync.
+- Real-stock-first extraction, `buy` / `sell` blacklists, and the blockless design.
+
+### Verified
+
+- Without a table: locked, iron stored and learned, EMC unchanged, no virtual shop items.
+- After adding a table: shop appears, diamond extracted, EMC spent.
+- Real EMC-less/NBT items still need a real RS storage disk/block with free space.
 
 ## 3.2.2
 
