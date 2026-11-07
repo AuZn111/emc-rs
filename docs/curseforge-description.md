@@ -2,59 +2,89 @@
 
 **AI-CREATED MOD** — the code, feature design, documentation and cover art of this mod were created and implemented by AI.
 
-A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forge**.
+**Project summary:** A blockless ProjectE × Refined Storage bridge with automatic EMC buy/sell, live EMC balance, stable quantity sync, NBT/enchantment protection, and a Transmutation Table progression gate. For Minecraft 1.20.1 / Forge.
 
 - Mod ID: `emc_rs`
 - Version: `3.3.0`
 - License: MIT
-- Requires: ProjectE `1.20.1-PE1.0.1`, Refined Storage `1.12.4`, Forge `47.x`
+- Minecraft: `1.20.1`
+- Loader: Forge `47.x`
+- Requires: ProjectE `1.20.1-PE1.0.1`, Refined Storage `1.12.4`
 - Source: https://github.com/AuZn111/emc-rs
 
 ---
 
-## What it does
+## Overview
 
-### Automatic EMC conversion on insert
+Most ProjectE × Refined Storage bridges require an extra EMC interface block per network and a manual buy/sell mode switch.
 
-- Any item inserted into the RS network (terminal shift-click, importer, interface, etc.) passes through an auto-recycle storage first.
-- Items with a ProjectE sell value are consumed and converted into the network owner's EMC.
-- Items with no EMC value, zero sell value, or in the **sell blacklist** are stored normally in RS.
-- Selling an item for the first time learns it, matching ProjectE's transmutation table behavior.
+This mod instead attaches the EMC shop to the **RS network itself**:
 
-> **Important:** with an empty sell blacklist, normal EMC-valued items with no NBT are converted to EMC. Items with NBT (enchantments, damage, custom data) are protected by default. Add machines, storage disks, tools, etc. to `sell` if you want to keep ordinary items too.
+- No new block, no extra terrain.
+- One RS network has one EMC owner.
+- The terminal shows the owner's learned items that can be bought with EMC.
+- Items inserted into the network can be converted to EMC automatically.
+- Extraction consumes real RS stock first and only spends EMC for the remainder.
 
-### NBT / enchantment protection and EMC-less items
+The result is a clean, blockless bridge that feels like a natural part of Refined Storage — with a progression gate so it does not skip ProjectE's early game.
 
-- Items with NBT data — enchantments, damage, custom names, potions, etc. — are **not auto-converted by default**; they enter normal RS storage with their NBT intact.
-- Truly EMC-less items are never consumed by the auto-sell storage. They are passed to normal RS storage and require a storage disk/block with free space; the virtual EMC storage does not hold real items.
-- If you explicitly want NBT items auto-converted, set `[automation] sellNbtItems = true`. This will discard enchantments/durability, so it is not recommended.
+---
 
-### Progression gate: Transmutation Table / Tablet
+## Features
 
-- Until the owner has **ever obtained** a ProjectE Transmutation Table or Transmutation Tablet, the virtual EMC shop and EMC extraction are locked.
-- By default, inserting EMC items while locked only records their knowledge and stores them normally; **no EMC is produced**.
-- The unlock is permanent per player and is detected from the player's inventory, a placed transmutation table, or the ProjectE advancement.
-- Once unlocked, the normal automatic EMC buy/sell behavior returns.
+### Blockless network-level EMC shop
 
-### Automatic EMC purchase on extraction
+- Virtual EMC stock is injected into the RS storage cache.
+- The terminal shows learned items with an EMC value, minus the `buy` blacklist.
+- No EMC interface block to craft or place.
 
-- The RS terminal shows the owner's learned ProjectE items that have EMC value and are not in the **buy blacklist**.
-- Real RS stock is consumed first; EMC is only spent for the remainder.
-- Buy-blacklisted items never appear in the virtual EMC shop (real stock is still extractable).
+### Automatic insert handling
 
-### Live EMC balance and quantity sync
+- Items inserted into the RS network pass through an auto-recycle storage first.
+- Ordinary items with an EMC value can be converted into the network owner's EMC.
+- Items with no EMC value are never consumed; they are passed to normal RS storage.
+
+### Automatic extraction with real stock first
+
+- Real RS stock is consumed first.
+- EMC is spent only for the remainder.
+- Buy-blacklisted items never appear in the virtual shop (real stock is still extractable).
+
+### Transmutation Table progression gate (3.3.0)
+
+- Until the owner has **ever obtained** a ProjectE **Transmutation Table** or **Transmutation Tablet**, the virtual EMC shop and EMC extraction are locked.
+- While locked:
+  - the terminal does not show the virtual EMC item list;
+  - no EMC can be spent;
+  - by default, inserting EMC items only **records knowledge and stores them normally** — no EMC is produced;
+  - Ctrl bulk recycle is blocked.
+- Unlocking is permanent per player and is detected from:
+  - a table/tablet in the player's inventory;
+  - a placed Transmutation Table;
+  - the ProjectE advancement for the table/tablet.
+- Once unlocked, normal automatic EMC buy/sell behavior returns.
+
+### NBT / enchantment protection (3.2.2)
+
+- Items with NBT data — enchantments, damage, custom names, potions, custom data — are **not auto-converted by default**.
+- They enter normal RS storage with their NBT intact.
+- Truly EMC-less items are never consumed.
+- `sellNbtItems = true` can force NBT items to be auto-sold, but this discards enchantments/durability and is not recommended.
+
+### Live EMC balance and stable quantities
 
 - A gold **EMC balance** line is shown in the RS terminal above the player inventory.
-- Virtual purchasable quantities update about once per second from the live EMC.
+- Virtual purchase quantities update about once per second from live EMC.
 - Quantities are updated with RS's native item-delta messages, not by rebuilding the cache. Entry UUIDs stay stable, so accurate counts and reliable extraction work together.
 
-### EMC control button in the RS terminal
+### Blacklists and terminal button
 
-| Action | Result |
-| --- | --- |
-| Click | Show status; first click binds the current player as the network EMC owner |
-| Shift + Click | Rebind the EMC owner (current owner or operator) |
-| Ctrl + Click | Recycle real network stock matching the terminal's four filter slots (skips sell blacklist) |
+- `buy` blacklist: items that cannot be bought with EMC.
+- `sell` blacklist: items that are never auto-converted to EMC and are stored normally.
+- EMC side button in block RS terminals:
+  - Click: status; first click binds the owner.
+  - Shift + Click: rebind owner (current owner or operator).
+  - Ctrl + Click: recycle real network stock matching the terminal's four filter slots.
 
 ---
 
@@ -81,6 +111,26 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 
 ---
 
+## How to use
+
+1. Place an RS controller and connect an RS terminal plus **real storage** (storage disk/block).
+2. You become the network EMC owner when you place the controller. If the network was placed by a command/structure, open a block RS terminal and click the EMC button once to bind.
+3. **Before obtaining a Transmutation Table/Tablet:**
+   - the terminal does not show EMC purchases;
+   - inserting items only records knowledge and stores them normally;
+   - EMC extraction is locked.
+4. **After obtaining a table/tablet:**
+   - the player is permanently unlocked;
+   - the terminal shows EMC purchases;
+   - extraction uses real stock first, then EMC;
+   - ordinary non-NBT items can be auto-converted on insert.
+5. Bulk recycle: put items into the terminal's four filter slots and Ctrl-click the EMC button.
+
+> **Important:** the virtual EMC storage is not a replacement for real RS storage.
+> Items without EMC, or NBT items, need a real storage disk/block with free space. Without one, they return to the player.
+
+---
+
 ## Configuration
 
 `config/emc_rs-common.toml` is generated on first launch:
@@ -98,7 +148,15 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
     convertWithoutTable = false
 ```
 
-Entries can be item registry names or `#tags`:
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `blacklist.buy` | empty | Items that cannot be bought with EMC |
+| `blacklist.sell` | empty | Items that are never auto-converted; stored normally |
+| `automation.sellNbtItems` | false | If true, NBT items are auto-sold too (loses enchantments/durability) |
+| `progression.requireTransmutationTable` | true | Locks EMC extraction until a table/tablet is obtained |
+| `progression.convertWithoutTable` | false | While locked, inserts only learn + store (no EMC); true still converts but extraction stays locked |
+
+Entries in blacklists can be item registry names or `#tags`:
 
 ```toml
 [blacklist]
@@ -113,28 +171,56 @@ sell = [
 ]
 ```
 
-- `buy`: items that cannot be purchased with EMC.
-- `sell`: items that are never auto-converted to EMC and are stored normally.
-- `automation.sellNbtItems`: default `false`; if `true`, NBT items (enchantments, damage, etc.) are auto-converted too, losing their NBT.
-- `progression.requireTransmutationTable`: default `true`; locks EMC extraction until the owner has obtained a table/tablet.
-- `progression.convertWithoutTable`: default `false`; while locked, inserts only record knowledge and store normally (no EMC). Set `true` to auto-sell before the table, but extraction remains locked.
-- NBT-specific matching is not supported.
-- Restart the game/server after editing.
+Restart the game/server after editing.
 
 ---
 
-## Notes and limitations
+## Important notes and limitations
 
-- **Single-player focused**: the controller placer (or the first player to click the EMC button) is the network EMC owner. One network uses one owner's knowledge/EMC.
-- NBT items (enchantments, damage, custom data) are preserved in normal RS storage by default.
-- The EMC shop is locked until the owner has obtained a Transmutation Table or Tablet.
-- EMC-less items need a real RS storage disk/block with space; otherwise they return to the player.
-- The owner must be online for EMC purchases and automatic selling.
-- Only the player's base EMC is used; EMC inside transmutation-table input slots or Klein Stars is not read.
-- Inserting EMC-valued items into the network converts them automatically unless the sell blacklist protects them.
-- The EMC button is only added to block RS terminals; portable/wireless terminals can still see and pull virtual items but have no button.
-- Items only; no fluid support.
-- For 1.20.1 + RS 1.12.x + ProjectE 1.0.x only; not compatible with RS 2.x / 1.21.
+- **AI-created:** code, feature design, documentation and cover art were created and implemented by AI.
+- **Real RS storage is required for real items.** The virtual EMC storage only holds EMC-purchasable virtual entries.
+- **Single-player focused:** one network uses one owner's ProjectE knowledge/EMC. The owner must be online.
+- **The owner is the controller placer** (or the player who first clicks the EMC button).
+- **Only the player's base EMC is used.** EMC inside transmutation-table input slots or Klein Stars is not read.
+- **The EMC button is only added to block RS terminals.** Portable/wireless terminals can see and pull virtual items but have no button.
+- **Items only; no fluid support.**
+- **Version lock:** 1.20.1 + RS 1.12.x + ProjectE 1.0.x only.
+
+---
+
+## FAQ / troubleshooting
+
+### Why can't I insert items without EMC or with NBT?
+
+Check that the network has a real Refined Storage disk/block with free space. The virtual EMC storage does not store real items; items bounce back without a real storage target.
+
+### Why is the EMC shop empty?
+
+The owner has not yet obtained a Transmutation Table or Transmutation Tablet. This is the 3.3.0 progression gate. Obtain either item (or place the table) and the player unlocks permanently.
+
+### Why did my enchanted item disappear?
+
+On 3.2.1 and older, enchanted items could be auto-sold using their base item value. 3.2.2+ protects all NBT items by default. Check that you are on 3.3.0 and `sellNbtItems = false`.
+
+### Why don't counts refresh immediately?
+
+Virtual quantities update about once per second. Reopening the terminal sends a full item list if needed.
+
+### Can I disable the progression gate?
+
+Set `progression.requireTransmutationTable = false`. To keep the gate but still produce EMC before the table, set `convertWithoutTable = true`.
+
+---
+
+## Changelog
+
+- **3.3.0**: Transmutation Table/Tablet progression gate; no-table inserts only record + store by default; new `[progression]` config; bulk recycle/status respect the gate.
+- **3.2.2**: NBT/enchantment protection by default; EMC-value check prevents consuming EMC-less items; `sellNbtItems` option.
+- **3.2.1**: AI attribution in metadata/docs/cover.
+- **3.2.0**: virtual quantities sync incrementally via RS item-delta messages; stable UUIDs; accurate counts and reliable extraction.
+- **3.1.0**: live EMC balance label in RS terminals.
+- **3.0.1**: stopped rebuilding the cache on every EMC change.
+- **3.0.0**: blockless automatic EMC buy/sell network storage.
 
 ---
 
@@ -142,8 +228,19 @@ sell = [
 
 - GitHub: https://github.com/AuZn111/emc-rs
 - Releases: https://github.com/AuZn111/emc-rs/releases
-- MC百科 / CurseForge pages: pending
+- License: MIT
+- This is a third-party addon; it is not affiliated with ProjectE or Refined Storage. Their binaries are not redistributed here.
 
-## License
+---
 
-MIT. This is a third-party addon; it is not affiliated with ProjectE or Refined Storage. Their binaries are not redistributed here.
+## 中文简介（简）
+
+**AI 创作**的 ProjectE × Refined Storage 联动，不需要额外的 EMC 接口方块。
+
+- 存入可自动转 EMC，取出真实库存优先、不足扣 EMC。
+- 未获得转化桌/便携转化桌时，EMC 取出锁定；默认存入只记录知识并正常存储，不产 EMC。
+- 附魔/耐久/药水/自定义 NBT 默认保护，不会自动吞掉。
+- 终端显示 EMC 余额，可购买数量每约 1 秒同步。
+- **需要真实 RS 存储盘/存储块**；无 EMC/NBT 物品没有真实存储会退回背包。
+
+适用于 Minecraft 1.20.1 / Forge，前置 ProjectE 与 Refined Storage。
