@@ -2,10 +2,10 @@
 
 **AI-CREATED MOD** — the code, feature design, documentation and cover art of this mod were created and implemented by AI.
 
-**Project summary:** A blockless ProjectE × Refined Storage bridge with automatic EMC buy/sell, live EMC balance, stable quantity sync, NBT/enchantment protection, and a Transmutation Table progression gate. For Minecraft 1.20.1 / Forge.
+**Project summary:** A blockless ProjectE × Refined Storage bridge with automatic EMC buy/sell, live EMC balance, stable quantity sync, NBT/enchantment protection, a Transmutation Table progression gate and one-time catch-up settlement. For Minecraft 1.20.1 / Forge.
 
 - Mod ID: `emc_rs`
-- Version: `3.3.0`
+- Version: `3.4.0`
 - License: MIT
 - Minecraft: `1.20.1`
 - Loader: Forge `47.x`
@@ -63,6 +63,7 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
   - a placed Transmutation Table;
   - the ProjectE advancement for the table/tablet.
 - Once unlocked, normal automatic EMC buy/sell behavior returns.
+- **Catch-up settlement (3.4.0):** on first unlock, the network's real stored stock is scanned once and eligible items are converted to EMC. Sell-blacklisted, NBT and no-EMC items are skipped; the table/tablet itself is always protected.
 
 ### NBT / enchantment protection (3.2.2)
 
@@ -104,7 +105,7 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
 
 1. Install Minecraft 1.20.1 + Forge 47.x.
 2. Put these jars in `mods/`:
-   - `emc_rs-3.3.0.jar`
+   - `emc_rs-3.4.0.jar`
    - `refinedstorage-1.12.4.jar`
    - `ProjectE-1.20.1-PE1.0.1.jar`
 3. Launch the game. No new block or item has to be crafted.
@@ -146,6 +147,7 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
 [progression]
     requireTransmutationTable = true
     convertWithoutTable = false
+    convertExistingStock = true
 ```
 
 | Option | Default | Purpose |
@@ -214,7 +216,8 @@ Set `progression.requireTransmutationTable = false`. To keep the gate but still 
 
 ## Changelog
 
-- **3.3.0**: Transmutation Table/Tablet progression gate; no-table inserts only record + store by default; new `[progression]` config; bulk recycle/status respect the gate.
+- 3.4.0: one-time catch-up settlement of real network stock on first unlock; `convertExistingStock` option.
+- 3.3.0: Transmutation Table/Tablet progression gate; no-table inserts only record + store by default; new `[progression]` config; bulk recycle/status respect the gate.
 - **3.2.2**: NBT/enchantment protection by default; EMC-value check prevents consuming EMC-less items; `sellNbtItems` option.
 - **3.2.1**: AI attribution in metadata/docs/cover.
 - **3.2.0**: virtual quantities sync incrementally via RS item-delta messages; stable UUIDs; accurate counts and reliable extraction.

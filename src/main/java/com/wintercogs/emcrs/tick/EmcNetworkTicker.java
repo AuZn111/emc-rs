@@ -32,6 +32,7 @@ import java.util.WeakHashMap;
 public final class EmcNetworkTicker {
     private static final int POLL_INTERVAL = 20;
     private static final Map<INetwork, Integer> TICKS = new WeakHashMap<>();
+    private static final Map<INetwork, UUID> CATCH_UP_OWNER = new WeakHashMap<>();
 
     private EmcNetworkTicker() {
     }
@@ -67,6 +68,13 @@ public final class EmcNetworkTicker {
         IKnowledgeProvider provider = player == null ? null : EmcTransactions.getProvider(player);
         Map<ItemInfo, Integer> current = new HashMap<>();
         if (player != null && provider != null && TransmutationGate.canUseEmc(player)) {
+            if (TransmutationGate.isCatchUpEnabled()) {
+                UUID catchUpOwner = CATCH_UP_OWNER.get(network);
+                if (!owner.equals(catchUpOwner)) {
+                    EmcTransactions.catchUpExistingStock(network, player, provider);
+                    CATCH_UP_OWNER.put(network, owner);
+                }
+            }
             current = EmcTransactions.getBuyCounts(provider);
         }
 

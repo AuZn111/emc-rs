@@ -1,7 +1,12 @@
 package com.wintercogs.emcrs.logic;
 
+import com.refinedmods.refinedstorage.api.network.INetwork;
+import com.refinedmods.refinedstorage.api.storage.cache.IStorageCache;
 import com.refinedmods.refinedstorage.api.util.Action;
+import com.refinedmods.refinedstorage.api.util.IComparer;
+import com.refinedmods.refinedstorage.api.util.StackListEntry;
 import com.wintercogs.emcrs.config.EmcConfig;
+import com.wintercogs.emcrs.storage.NetworkEmcBuyStorage;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -12,6 +17,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
@@ -183,6 +189,75 @@ public final class EmcTransactions {
             addEmc(provider, player, gain);
         }
         return ItemStack.EMPTY;
+    }
+
+    /**
+     * One-time conversion of real stock already stored in the network after the
+     * owner unlocks the EMC shop with a transmutation table/tablet.
+     *
+     * <p>Virtual buy-storage entries are ignored by the extraction filter. The
+     * method respects the sell blacklist, NBT protection and no-EMC items, and
+     * always protects the transmutation table/tablet itself.</p>
+     */
+    public static int catchUpExistingStock(@NotNull INetwork network, @NotNull ServerPlayer player,
+                                           @NotNull IKnowledgeProvider provider) {
+        if (!TransmutationGate.isCatchUpEnabled() || !TransmutationGate.canUseEmc(player)) {
+            return 0;
+        }
+        IStorageCache<ItemStack> cache = network.getItemStorageCache();
+        int sold = 0;
+        BigInteger gained = BigInteger.ZERO;
+
+        for (StackListEntry<ItemStack> entry : cache.getList().copy().getStacks()) {
+            ItemStack cached = entry.getStack();
+            if (cached.isEmpty()) {
+                continue;
+            }
+            ItemStack key = cached.copy();
+            key.setCount(1);
+            if (TransmutationGate.isTransmutationItem(key)) {
+                continue;
+            }
+            ItemInfo info = ItemInfo.fromStack(key);
+            if (IEMCProxy.INSTANCE.getValue(info) <= 0L) {
+                continue;
+            }
+            if (!EmcConfig.SELL_NBT_ITEMS.get() && key.hasTag()) {
+                continue;
+            }
+            if (EmcBlacklist.sell().matches(key)) {
+                continue;
+            }
+            long unitValue = IEMCProxy.INSTANCE.getSellValue(info);
+            if (unitValue <= 0L) {
+                continue;
+            }
+
+            for (int guard = 0; guard < 4096; guard++) {
+                ItemStack inNetwork = cache.getList().get(key, IComparer.COMPARE_NBT);
+                if (inNetwork == null) {
+                    break;
+                }
+                ItemStack extracted = network.extractItem(
+                        inNetwork, inNetwork.getCount(), IComparer.COMPARE_NBT, Action.PERFORM,
+                        storage -> !(storage instanceof NetworkEmcBuyStorage));
+                if (extracted.isEmpty()) {
+                    break;
+                }
+                int amount = extracted.getCount();
+                sold += amount;
+                gained = gained.add(BigInteger.valueOf(unitValue)
+                        .multiply(BigInteger.valueOf(amount)));
+                learn(provider, player, ItemInfo.fromStack(extracted));
+            }
+        }
+
+        if (gained.signum() > 0) {
+            addEmc(provider, player, gained);
+            player.displayClientMessage(Component.translatable(
+                    "message.emc_rs.network.catch_up", sold, formatEmc(gained)), false);
+        }
+        return sold;
     }
 
     public static void learn(@NotNull IKnowledgeProvider provider, @NotNull ServerPlayer owner, @NotNull ItemInfo info) {

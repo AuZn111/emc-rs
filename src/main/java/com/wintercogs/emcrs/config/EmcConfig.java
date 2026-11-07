@@ -17,6 +17,7 @@ public final class EmcConfig {
     public static final ForgeConfigSpec.BooleanValue SELL_NBT_ITEMS;
     public static final ForgeConfigSpec.BooleanValue REQUIRE_TRANSMUTATION_TABLE;
     public static final ForgeConfigSpec.BooleanValue CONVERT_WITHOUT_TABLE;
+    public static final ForgeConfigSpec.BooleanValue CONVERT_EXISTING_STOCK;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -61,6 +62,13 @@ public final class EmcConfig {
                         "true: auto-sell still converts items and adds EMC, but EMC extraction remains locked until the table is obtained."
                 )
                 .define("convertWithoutTable", false);
+        CONVERT_EXISTING_STOCK = builder
+                .comment(
+                        "If true, when the owner first unlocks the EMC shop with a table/tablet,",
+                        "scan the network's real stored stock and convert eligible items once.",
+                        "Respects sell-blacklist, NBT protection, no-EMC items and protects the table/tablet itself."
+                )
+                .define("convertExistingStock", true);
         builder.pop();
 
         SPEC = builder.build();

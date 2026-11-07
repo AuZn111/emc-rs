@@ -2,6 +2,27 @@
 
 All notable changes to EMC × Refined Storage.
 
+## 3.4.0
+
+### Added
+
+- One-time catch-up settlement: when the owner first unlocks the EMC shop with a Transmutation Table/Tablet, the network's **real stored stock** is scanned and eligible items are converted to EMC automatically.
+- New `[progression] convertExistingStock` option (default `true`).
+
+### Behavior
+
+- Respects the `sell` blacklist, NBT protection and no-EMC items.
+- Always protects the Transmutation Table/Tablet itself.
+- Ignores virtual EMC-shop entries; only real RS storage is settled.
+- Runs once per network/owner; repeating ticks do not duplicate the conversion.
+- Sends the owner a chat message with the converted item count and EMC gained.
+
+### Verified
+
+- Test network had 2 iron ingots, 2 enchanted swords and 1 Transmutation Table before unlock.
+- Catch-up converted both iron ingots (`512 EMC`), preserved the enchanted swords and the table, and a second catch-up converted `0`.
+- No duplicate EMC on the second run.
+
 ## 3.3.0
 
 ### Added

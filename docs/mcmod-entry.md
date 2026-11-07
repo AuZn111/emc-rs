@@ -4,7 +4,7 @@
 >
 > 本模组的代码、功能设计、文档与封面均由 **AI 创作并实现**。
 >
-> 当前版本：**3.3.0** ｜ Minecraft **1.20.1** ｜ Forge **47.x** ｜ 前置：ProjectE、Refined Storage
+> 当前版本：**3.4.0** ｜ Minecraft **1.20.1** ｜ Forge **47.x** ｜ 前置：ProjectE、Refined Storage
 
 ## 一句话介绍
 
@@ -20,7 +20,7 @@
 | 英文名称 | EMC × Refined Storage |
 | Mod ID | `emc_rs` |
 | 作者 | EMC-RS Team（AI 创作） |
-| 当前版本 | 3.3.0 |
+| 当前版本 | 3.4.0 |
 | 支持版本 | Minecraft 1.20.1 |
 | 运行环境 | Forge 47.x |
 | 前置模组 | ProjectE 1.20.1-PE1.0.1、Refined Storage 1.12.4 |
@@ -75,6 +75,13 @@
   - 已完成 ProjectE 对应进度。
 - 解锁按玩家 UUID 记录，之后放置、丢失、换网络都不会重新锁定。
 
+#### 3.4.0：解锁时自动补结算旧库存
+
+- 玩家首次获得转化桌/便携转化桌并解锁时，会扫描该网络的**真实库存**，把符合条件的已存物品一次性转成 EMC。
+- 默认 `convertExistingStock = true`。
+- 跳过：`sell` 黑名单、带 NBT 的物品、无 EMC 物品、转化桌/平板本身、纯虚拟 EMC 商品。
+- 每个网络/主人只补结算一次；重复 tick 不会重复扣物品，重启后重新扫描也不会重复产生 EMC。
+
 ### 4. 附魔 / NBT 保护（3.2.2 起）
 
 - 默认**不会**自动回收带 NBT 的物品：
@@ -114,7 +121,7 @@
 
 ## 使用流程（单人）
 
-1. 安装 Forge 1.20.1、ProjectE、Refined Storage，把 `emc_rs-3.3.0.jar` 放入 `mods/`。
+1. 安装 Forge 1.20.1、ProjectE、Refined Storage，把 `emc_rs-3.4.0.jar` 放入 `mods/`。
 2. 正常放置 RS 控制器，接上 RS 终端和**真实存储盘/存储块**。
 3. 控制器由你放置时会自动成为网络 EMC 主人；否则打开方块终端点一次 EMC 按钮绑定。
 4. **未获得转化桌/便携转化桌时：**
@@ -144,6 +151,7 @@
 [progression]
     requireTransmutationTable = true
     convertWithoutTable = false
+    convertExistingStock = true
 ```
 
 ### 选项说明
@@ -155,6 +163,7 @@
 | `automation.sellNbtItems` | false | true 时强制自动回收带 NBT 物品（会丢附魔） |
 | `progression.requireTransmutationTable` | true | 未获得转化桌/平板时锁定 EMC 取出 |
 | `progression.convertWithoutTable` | false | 未获得桌子时存入只学习+存储，不产 EMC；true 则仍自动转 EMC 但仍不能取出 |
+| `progression.convertExistingStock` | true | 首次解锁时一次性结算网络里已存的真实物品 |
 
 修改后需要重启游戏/服务器。
 
@@ -201,14 +210,11 @@
 
 ---
 
-## 版本 3.3.0 更新摘要
+## 版本 3.4.0 更新摘要
 
-- 新增转化桌/便携转化桌进度门槛：未获得时锁定 EMC 取出。
-- 默认未获得桌子时，存入只记录知识并正常存储，不产 EMC。
-- 解锁按玩家永久记录，支持背包、已放置方块、ProjectE 进度检测。
-- 批量回收、状态提示同步遵守门槛。
-- 保留 3.2.2 的附魔/NBT 保护与无 EMC 物品不消耗。
-- 保留 3.2.0 的 EMC 余额显示与数量增量同步。
+- 新增“获得转化桌后自动补结算旧库存”：首次解锁扫描网络真实库存，把符合规则的物品一次性转成 EMC。
+- 跳过 sell 黑名单、NBT 物品、无 EMC 物品和转化桌/平板本身；每个网络/主人只结算一次。
+- 保留 3.3.0 的转化桌进度门槛、3.2.2 的附魔/NBT 保护、3.2.0 的 EMC 余额与数量同步。
 
 ---
 

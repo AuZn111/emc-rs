@@ -15,5 +15,6 @@
   "message.emc_rs.network.nothing_to_sell": "网络里没有匹配的可回收库存。",
   "message.emc_rs.network.bulk_sold": "已回收 %s 个物品，获得 %s EMC。",
   "gui.emc_rs.emc": "EMC：%s",
-  "message.emc_rs.network.table_locked": "EMC 取出已锁定：请先获得转化桌或便携转化桌。"
+  "message.emc_rs.network.table_locked": "EMC 取出已锁定：请先获得转化桌或便携转化桌。",
+  "message.emc_rs.network.catch_up": "已将网络库存中的 %s 个物品自动转化为 %s EMC。"
 }

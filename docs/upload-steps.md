@@ -10,9 +10,9 @@ Release：https://github.com/AuZn111/emc-rs/releases
 
 发布物：
 
-- `dist/emc_rs-3.3.0.jar`
+- `dist/emc_rs-3.4.0.jar`
 - `docs/cover.png`
-- `dist/emc_rs-3.3.0-src.zip`（干净源码，不含前置 jar）
+- `dist/emc_rs-3.4.0-src.zip`（干净源码，不含前置 jar）
 
 ## 二、CurseForge
 
@@ -30,11 +30,11 @@ Release：https://github.com/AuZn111/emc-rs/releases
    - `ProjectE` — Required dependency
    - `Refined Storage` — Required dependency
 5. 上传文件：
-   - File：`dist/emc_rs-3.3.0.jar`
-   - Display name：`emc_rs-3.3.0`
+   - File：`dist/emc_rs-3.4.0.jar`
+   - Display name：`emc_rs-3.4.0`
    - Release type：`Release`
    - Game versions：`1.20.1`、`Forge`
-   - Changelog：粘贴 `CHANGELOG.md` 中 3.3.0 的内容。
+   - Changelog：粘贴 `CHANGELOG.md` 中 3.4.0 的内容。
 6. 在 Description/Summary 里保留 **AI-CREATED** 标注。
 7. 提交审核/发布，发布后把 CurseForge 链接补到 README。
 

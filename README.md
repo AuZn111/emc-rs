@@ -8,7 +8,7 @@
 一个面向 **Minecraft 1.20.1 / Forge** 的 **等价交换（ProjectE）× 精致存储（Refined Storage）** 联动模组。
 
 - Mod ID：`emc_rs`
-- 当前版本：`3.3.0`
+- 当前版本：`3.4.0`
 - 前置：ProjectE `1.20.1-PE1.0.1`、Refined Storage `1.12.4`、Forge `47.x`
 - 许可证：MIT
 - 下载：[GitHub Releases](https://github.com/AuZn111/emc-rs/releases)
@@ -56,6 +56,18 @@
   - 已完成 ProjectE 对应进度。
 - 解锁按玩家 UUID 记录，之后放置/丢失桌子不会重新锁定。
 
+#### 获得桌子后自动补结算旧库存（3.4.0）
+
+- 玩家首次获得转化桌/便携转化桌并解锁时，会扫描该网络的**真实库存**，把符合条件的已存物品**一次性转成 EMC**。
+- 默认 `convertExistingStock = true`。
+- 跳过：
+  - `sell` 黑名单物品
+  - 带 NBT 的物品（附魔/耐久/药水/自定义 NBT）
+  - 没有 EMC 价值的物品
+  - 转化桌/便携转化桌本身
+  - 虚拟 EMC 商品（只处理真实库存）
+- 每个网络/主人只补结算一次；重复 tick 不会重复扣物品。重启后重新扫描也是幂等的，已转换的物品不会再次产生 EMC。
+
 ### 4. EMC 余额与数量同步
 
 - RS 终端物品栏上方右侧显示金色 **EMC 余额**。
@@ -78,7 +90,7 @@
 
 1. 安装 Minecraft 1.20.1 + Forge 47.x。
 2. 将以下文件放入 `mods/`：
-   - `emc_rs-3.3.0.jar`
+   - `emc_rs-3.4.0.jar`
    - `refinedstorage-1.12.4.jar`
    - `ProjectE-1.20.1-PE1.0.1.jar`
 3. 启动游戏，不需要合成任何新方块。
@@ -110,6 +122,7 @@
 [progression]
     requireTransmutationTable = true
     convertWithoutTable = false
+    convertExistingStock = true
 ```
 
 条目支持物品注册名或 `#tag`：
@@ -134,6 +147,7 @@ sell = [
 - `automation.sellNbtItems`：默认 `false`；设为 `true` 后带 NBT 的物品也会被自动回收（附魔/耐久会丢失）。
 - `progression.requireTransmutationTable`：默认 `true`；未获得转化桌/便携转化桌时锁定 EMC 取出。
 - `progression.convertWithoutTable`：默认 `false`；未获得桌子时存入只学习+存储、不产 EMC。设为 `true` 则仍自动转 EMC，但仍不能用 EMC 取出。
+- `progression.convertExistingStock`：默认 `true`；首次解锁时一次性结算网络里已存的真实物品。
 - 只支持物品 ID / 标签，不支持按 NBT 精确匹配。
 - 修改后需要重启游戏/服务器生效。
 
@@ -148,6 +162,7 @@ sell = [
 - **只使用玩家面板上的基础 EMC**：转化桌输入槽或 Klein Star 里的 EMC 不会被读取。
 - **自动回收会拦截网络插入**：请先把不想被回收的物品加入 `sell` 黑名单；带 NBT 的物品默认受保护。
 - **进度门槛**：未获得转化桌/便携转化桌时不能用 EMC 取出；默认存入只记录知识并正常存储，不产 EMC。
+- **旧库存补结算**：首次解锁会一次性把网络真实库存中符合条件的物品转成 EMC；受 sell 黑名单和 NBT 保护限制。
 - **无 EMC 物品需要真实 RS 存储**：网络里必须有存储盘/存储块且有空间，否则物品会弹回背包。
 - **EMC 按钮只加在方块 RS 终端上**；便携/无线终端仍能看到虚拟物品并按 EMC 取出，但没有按钮。
 - 只处理物品，不处理流体。
@@ -172,7 +187,7 @@ gradlew.bat build
 
 详见 [libs/README.md](libs/README.md)。
 
-产物：`build/libs/emc_rs-3.3.0.jar`。
+产物：`build/libs/emc_rs-3.4.0.jar`。
 
 ---
 

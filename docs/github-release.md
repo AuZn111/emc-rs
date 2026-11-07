@@ -1,52 +1,42 @@
-# EMC × Refined Storage 3.3.0
+# EMC × Refined Storage 3.4.0
 
 **AI-created mod** — code, feature design, documentation and cover art were created and implemented by AI.
 
 Blockless **ProjectE × Refined Storage** bridge for **Minecraft 1.20.1 / Forge**.
 
-## New in 3.3.0: transmutation-table progression gate
+## New in 3.4.0: unlock catch-up settlement
 
-- Until the owner has **ever obtained** a ProjectE **Transmutation Table** or **Transmutation Tablet**, the virtual EMC shop and EMC extraction are locked.
-- Without a table, the terminal does not show the virtual EMC item list and cannot spend EMC.
-- By default (`convertWithoutTable = false`), inserting EMC items while locked **only records knowledge and stores them normally**; no EMC is produced.
-- Unlocking is permanent per player and is detected from:
-  - a table/tablet in the player's inventory,
-  - a placed Transmutation Table,
-  - the ProjectE advancement for the table/tablet.
-- Bulk recycle and the EMC status message also respect the gate.
-- Config:
-  ```toml
-  [progression]
-      requireTransmutationTable = true
-      convertWithoutTable = false
-  ```
-  Set `convertWithoutTable = true` if you want auto-sell to keep producing EMC before the table (extraction stays locked).
+When the owner first obtains a **Transmutation Table** or **Transmutation Tablet** and unlocks the EMC shop, the network's **real stored stock** is scanned once and eligible items are automatically converted into EMC.
+
+- Default `[progression] convertExistingStock = true`.
+- Only real RS storage is settled; virtual EMC-shop entries are ignored.
+- Skips:
+  - `sell` blacklist items;
+  - items with NBT (enchantments, damage, potions, custom data);
+  - items with no EMC value;
+  - the Transmutation Table / Tablet itself.
+- Runs once per network/owner; repeating ticks do not duplicate the conversion.
+- Sends the owner a chat message with the converted item count and EMC gained.
 
 ### Test result
 
 ```
-lockedWithoutTable=true  ironCount=1  learned=true  emcAfterInsert=10000
-buyStacksBefore=0  diamondBefore=0
-unlockedWithTable=true  buyStacksAfter=2  diamondAfter=1  emcAfterBuy=1808
-convertWithoutTable=false
+before[iron=2, sword=2, table=1, emc=10000]
+sold=2
+after[iron=0, sword=2, table=1, emc=10512]
+soldAgain=0, emcAgain=10512
 ```
 
-## Existing fixes retained
+The two iron ingots were converted, the enchanted swords and the table were preserved, and a second catch-up converted nothing.
 
-- **Enchantments / NBT are preserved.** Items with NBT are not auto-converted by default.
-- **Truly EMC-less items are never consumed.** They are passed to normal RS storage.
-- `[automation] sellNbtItems` (default `false`) remains available if you explicitly want NBT items auto-sold.
-- EMC-less items still need a real RS storage disk/block with free space.
+## Existing behavior retained
 
-## Highlights
-
-- Automatic EMC conversion when ordinary (non-NBT) EMC-valued items are inserted.
-- Automatic EMC spending when learned items are pulled from the terminal (after the table gate unlocks).
-- Live EMC balance in the RS terminal.
-- Virtual purchase quantities update every ~1 second with stable item IDs.
-- `buy` / `sell` blacklists, NBT protection, and the progression gate.
-- EMC side button: status/bind, Shift rebind, Ctrl filtered bulk recycle.
-- No extra block or item.
+- **Transmutation Table/Tablet progression gate (3.3.0):** no EMC shop or EMC extraction before the table/tablet is obtained.
+- **No-table insert behavior:** by default records knowledge and stores normally; no EMC is produced.
+- **NBT/enchantment protection (3.2.2):** NBT items are not auto-sold by default.
+- **EMC-less items:** never consumed; passed to normal RS storage.
+- **Live EMC balance + incremental quantity sync (3.2.0/3.1.0):** stable item IDs and reliable extraction.
+- **Real-stock-first extraction**, `buy` / `sell` blacklists, and the blockless design.
 
 ## Requirements
 
@@ -62,10 +52,10 @@ Put the mod jar and the two required mods in `mods/`. No new block or item has t
 
 ## Notes
 
-- The sell blacklist is empty by default, but NBT items are protected automatically. Ordinary EMC-valued items without NBT still become EMC when inserted after the table gate is unlocked.
-- Add machines, storage disks, tools, etc. to `sell` if you want to keep ordinary non-NBT items.
+- Catch-up settlement respects the sell blacklist and NBT protection. Protect anything you want to keep with `sell`.
+- Real EMC-less/NBT items still need a real RS storage disk/block with free space.
 - Single-player focused; one network uses one owner's ProjectE knowledge/EMC.
-- The owner must be online for automatic buying/selling.
+- The owner must be online for catch-up, buying and selling.
 - The EMC button is only added to block RS terminals.
 - Items only; no fluid support.
 - Source: https://github.com/AuZn111/emc-rs
@@ -73,8 +63,9 @@ Put the mod jar and the two required mods in `mods/`. No new block or item has t
 
 ## Changes
 
-- 3.3.0: transmutation-table progression gate; no-table inserts only record + store by default; new `[progression]` config.
-- 3.2.2: NBT/enchantment protection by default; EMC-value check prevents consuming EMC-less items; `sellNbtItems` option.
+- 3.4.0: one-time catch-up settlement of real network stock on first unlock; new `convertExistingStock` option.
+- 3.3.0: Transmutation Table/Tablet progression gate; no-table inserts only record + store by default.
+- 3.2.2: NBT/enchantment protection by default; EMC-value check prevents consuming EMC-less items.
 - 3.2.1: AI attribution in metadata/docs/cover.
 - 3.2.0: virtual quantities sync incrementally via RS item-delta messages; stable UUIDs.
 - 3.1.0: live EMC balance label in RS terminals.

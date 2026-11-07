@@ -31,7 +31,7 @@ public final class TransmutationGate {
         if (player == null) {
             return false;
         }
-        if (!EmcConfig.REQUIRE_TRANSMUTATION_TABLE.get()) {
+        if (!isGateEnabled()) {
             return true;
         }
         if (player.getPersistentData().getBoolean(UNLOCKED_KEY)) {
@@ -42,6 +42,25 @@ public final class TransmutationGate {
             return true;
         }
         return false;
+    }
+
+    public static boolean isGateEnabled() {
+        return EmcConfig.REQUIRE_TRANSMUTATION_TABLE.get();
+    }
+
+    public static boolean isCatchUpEnabled() {
+        return isGateEnabled() && EmcConfig.CONVERT_EXISTING_STOCK.get();
+    }
+
+    public static boolean isTransmutationItem(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id == null) {
+            return false;
+        }
+        String name = id.toString();
+        return "projecte:transmutation_table".equals(name)
+                || "projecte:transmutation_tablet".equals(name)
+                || "projecte:portable_transmutation_table".equals(name);
     }
 
     public static boolean canConvertWithoutTable() {
@@ -66,7 +85,7 @@ public final class TransmutationGate {
     private static boolean hasTableInInventory(ServerPlayer player) {
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
-            if (!stack.isEmpty() && isTableItem(stack)) {
+            if (!stack.isEmpty() && isTransmutationItem(stack)) {
                 return true;
             }
         }
@@ -103,13 +122,6 @@ public final class TransmutationGate {
     }
 
     private static boolean isTableItem(ItemStack stack) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (id == null) {
-            return false;
-        }
-        String name = id.toString();
-        return "projecte:transmutation_table".equals(name)
-                || "projecte:transmutation_tablet".equals(name)
-                || "projecte:portable_transmutation_table".equals(name);
+        return isTransmutationItem(stack);
     }
 }
