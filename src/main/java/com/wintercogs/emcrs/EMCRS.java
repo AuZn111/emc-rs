@@ -1,7 +1,9 @@
 package com.wintercogs.emcrs;
 
 import com.wintercogs.emcrs.config.EmcConfig;
+import com.wintercogs.emcrs.logic.TransmutationGate;
 import com.wintercogs.emcrs.network.EmcNetworkHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +21,7 @@ public class EMCRS {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::commonSetup);
+        MinecraftForge.EVENT_BUS.addListener(TransmutationGate::onBlockPlaced);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

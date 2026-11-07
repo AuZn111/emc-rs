@@ -9,6 +9,7 @@ import com.refinedmods.refinedstorage.util.NetworkUtils;
 import com.wintercogs.emcrs.data.EmcNetworkData;
 import com.wintercogs.emcrs.logic.EmcBlacklist;
 import com.wintercogs.emcrs.logic.EmcTransactions;
+import com.wintercogs.emcrs.logic.TransmutationGate;
 import com.wintercogs.emcrs.storage.NetworkEmcBuyStorage;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -103,6 +104,10 @@ public final class EmcNetworkActions {
                 EmcTransactions.formatEmc(provider.getEmc()),
                 EmcBlacklist.buy().size(),
                 EmcBlacklist.sell().size()), false);
+
+        if (!TransmutationGate.canUseEmc(ownerPlayer)) {
+            message(player, "message.emc_rs.network.table_locked");
+        }
     }
 
     private static void bulkSell(ServerPlayer player, ServerLevel level, INetwork network,
@@ -125,6 +130,10 @@ public final class EmcNetworkActions {
         IKnowledgeProvider provider = EmcTransactions.getProvider(ownerPlayer);
         if (provider == null) {
             message(player, "message.emc_rs.network.no_provider");
+            return;
+        }
+        if (!TransmutationGate.canUseEmc(ownerPlayer) && !TransmutationGate.canConvertWithoutTable()) {
+            message(player, "message.emc_rs.network.table_locked");
             return;
         }
 

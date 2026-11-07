@@ -5,6 +5,7 @@ import com.refinedmods.refinedstorage.api.storage.IStorage;
 import com.refinedmods.refinedstorage.api.storage.cache.IStorageCache;
 import com.wintercogs.emcrs.data.EmcNetworkData;
 import com.wintercogs.emcrs.logic.EmcTransactions;
+import com.wintercogs.emcrs.logic.TransmutationGate;
 import com.wintercogs.emcrs.storage.NetworkEmcBuyStorage;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -64,9 +65,10 @@ public final class EmcNetworkTicker {
         UUID owner = EmcNetworkData.get(level).getOwner(network.getPosition());
         ServerPlayer player = EmcTransactions.getOwnerPlayer(level, owner);
         IKnowledgeProvider provider = player == null ? null : EmcTransactions.getProvider(player);
-        Map<ItemInfo, Integer> current = provider == null
-                ? new HashMap<>()
-                : EmcTransactions.getBuyCounts(provider);
+        Map<ItemInfo, Integer> current = new HashMap<>();
+        if (player != null && provider != null && TransmutationGate.canUseEmc(player)) {
+            current = EmcTransactions.getBuyCounts(provider);
+        }
 
         Map<ItemInfo, Integer> baseline = buyStorage.getLastCounts();
         if (baseline.isEmpty() && current.isEmpty()) {

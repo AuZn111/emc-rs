@@ -6,6 +6,7 @@ import com.refinedmods.refinedstorage.api.storage.IStorage;
 import com.refinedmods.refinedstorage.api.util.Action;
 import com.wintercogs.emcrs.data.EmcNetworkData;
 import com.wintercogs.emcrs.logic.EmcTransactions;
+import com.wintercogs.emcrs.logic.TransmutationGate;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,6 +65,10 @@ public class NetworkEmcBuyStorage implements IStorage<ItemStack> {
         }
         var provider = EmcTransactions.getProvider(player);
         if (provider == null) {
+            this.lastCounts = new HashMap<>();
+            return Collections.emptyList();
+        }
+        if (!TransmutationGate.canUseEmc(player)) {
             this.lastCounts = new HashMap<>();
             return Collections.emptyList();
         }

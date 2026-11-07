@@ -15,6 +15,8 @@ public final class EmcConfig {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> BUY_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> SELL_BLACKLIST;
     public static final ForgeConfigSpec.BooleanValue SELL_NBT_ITEMS;
+    public static final ForgeConfigSpec.BooleanValue REQUIRE_TRANSMUTATION_TABLE;
+    public static final ForgeConfigSpec.BooleanValue CONVERT_WITHOUT_TABLE;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -42,6 +44,23 @@ public final class EmcConfig {
                         "Default false: such items are preserved and stored normally in RS."
                 )
                 .define("sellNbtItems", false);
+        builder.pop();
+
+        builder.comment("Progression gate for the virtual EMC shop.").push("progression");
+        REQUIRE_TRANSMUTATION_TABLE = builder
+                .comment(
+                        "If true, the owner must have obtained a Transmutation Table or Transmutation Tablet",
+                        "before virtual EMC items can be extracted and before EMC can be spent.",
+                        "The unlock is remembered per player once obtained."
+                )
+                .define("requireTransmutationTable", true);
+        CONVERT_WITHOUT_TABLE = builder
+                .comment(
+                        "Only used while the owner has no transmutation table/tablet.",
+                        "false (default): inserting EMC items only records knowledge and stores them normally; no EMC is produced.",
+                        "true: auto-sell still converts items and adds EMC, but EMC extraction remains locked until the table is obtained."
+                )
+                .define("convertWithoutTable", false);
         builder.pop();
 
         SPEC = builder.build();

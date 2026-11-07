@@ -105,6 +105,9 @@ public final class EmcTransactions {
         if (player == null || provider == null || stack.isEmpty() || size <= 0) {
             return ItemStack.EMPTY;
         }
+        if (!TransmutationGate.canUseEmc(player)) {
+            return ItemStack.EMPTY;
+        }
 
         ItemInfo info = ItemInfo.fromStack(stack);
         if (!provider.hasKnowledge(info) || EmcBlacklist.buy().matches(info)) {
@@ -142,6 +145,17 @@ public final class EmcTransactions {
         }
 
         ItemInfo info = ItemInfo.fromStack(stack);
+        boolean canUseEmc = TransmutationGate.canUseEmc(player);
+        if (!canUseEmc) {
+            // Before obtaining a table: record knowledge, but never spend EMC.
+            if (action == Action.PERFORM && IEMCProxy.INSTANCE.getValue(info) > 0L) {
+                learn(provider, player, info);
+            }
+            if (!EmcConfig.CONVERT_WITHOUT_TABLE.get()) {
+                // Default: store normally and only learn the item; no EMC is produced.
+                return copyWithSize(stack, size);
+            }
+        }
         if (IEMCProxy.INSTANCE.getValue(info) <= 0L) {
             // Truly no EMC value: never consume it; let normal RS storage take it.
             return copyWithSize(stack, size);

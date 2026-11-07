@@ -5,7 +5,7 @@
 A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forge**.
 
 - Mod ID: `emc_rs`
-- Version: `3.2.2`
+- Version: `3.3.0`
 - License: MIT
 - Requires: ProjectE `1.20.1-PE1.0.1`, Refined Storage `1.12.4`, Forge `47.x`
 - Source: https://github.com/AuZn111/emc-rs
@@ -28,6 +28,13 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 - Items with NBT data — enchantments, damage, custom names, potions, etc. — are **not auto-converted by default**; they enter normal RS storage with their NBT intact.
 - Truly EMC-less items are never consumed by the auto-sell storage. They are passed to normal RS storage and require a storage disk/block with free space; the virtual EMC storage does not hold real items.
 - If you explicitly want NBT items auto-converted, set `[automation] sellNbtItems = true`. This will discard enchantments/durability, so it is not recommended.
+
+### Progression gate: Transmutation Table / Tablet
+
+- Until the owner has **ever obtained** a ProjectE Transmutation Table or Transmutation Tablet, the virtual EMC shop and EMC extraction are locked.
+- By default, inserting EMC items while locked only records their knowledge and stores them normally; **no EMC is produced**.
+- The unlock is permanent per player and is detected from the player's inventory, a placed transmutation table, or the ProjectE advancement.
+- Once unlocked, the normal automatic EMC buy/sell behavior returns.
 
 ### Automatic EMC purchase on extraction
 
@@ -67,7 +74,7 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 
 1. Install Minecraft 1.20.1 + Forge 47.x.
 2. Put these jars in `mods/`:
-   - `emc_rs-3.2.2.jar`
+   - `emc_rs-3.3.0.jar`
    - `refinedstorage-1.12.4.jar`
    - `ProjectE-1.20.1-PE1.0.1.jar`
 3. Launch the game. No new block or item has to be crafted.
@@ -85,6 +92,10 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 
 [automation]
     sellNbtItems = false
+
+[progression]
+    requireTransmutationTable = true
+    convertWithoutTable = false
 ```
 
 Entries can be item registry names or `#tags`:
@@ -105,6 +116,8 @@ sell = [
 - `buy`: items that cannot be purchased with EMC.
 - `sell`: items that are never auto-converted to EMC and are stored normally.
 - `automation.sellNbtItems`: default `false`; if `true`, NBT items (enchantments, damage, etc.) are auto-converted too, losing their NBT.
+- `progression.requireTransmutationTable`: default `true`; locks EMC extraction until the owner has obtained a table/tablet.
+- `progression.convertWithoutTable`: default `false`; while locked, inserts only record knowledge and store normally (no EMC). Set `true` to auto-sell before the table, but extraction remains locked.
 - NBT-specific matching is not supported.
 - Restart the game/server after editing.
 
@@ -114,6 +127,7 @@ sell = [
 
 - **Single-player focused**: the controller placer (or the first player to click the EMC button) is the network EMC owner. One network uses one owner's knowledge/EMC.
 - NBT items (enchantments, damage, custom data) are preserved in normal RS storage by default.
+- The EMC shop is locked until the owner has obtained a Transmutation Table or Tablet.
 - EMC-less items need a real RS storage disk/block with space; otherwise they return to the player.
 - The owner must be online for EMC purchases and automatic selling.
 - Only the player's base EMC is used; EMC inside transmutation-table input slots or Klein Stars is not read.

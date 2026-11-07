@@ -2,6 +2,15 @@
 
 All notable changes to EMC × Refined Storage.
 
+## 3.3.0
+
+- Added a progression gate: until the player has ever obtained a Transmutation Table or Transmutation Tablet, the virtual EMC shop and EMC extraction are locked.
+- Without a table, inserting EMC items records knowledge and stores them normally by default; no EMC is produced (`convertWithoutTable = false`).
+- Unlocking is per player and permanent, detected from inventory, a placed transmutation table, or the ProjectE advancement.
+- New `[progression] requireTransmutationTable` and `convertWithoutTable` options.
+- Bulk recycle and the EMC status message respect the gate.
+- Verified: locked without table, knowledge recorded, no EMC produced, no virtual purchases; after adding a table, purchases and EMC extraction work.
+
 ## 3.2.2
 
 - Items with NBT data (enchantments, damage, custom data, potions) are no longer auto-converted by default; they are stored normally and keep their NBT.

@@ -14,5 +14,6 @@
   "message.emc_rs.network.no_filter": "Put at least one EMC-valued, non-sell-blacklisted item into the terminal's four filter slots first.",
   "message.emc_rs.network.nothing_to_sell": "No matching network stock could be recycled.",
   "message.emc_rs.network.bulk_sold": "Recycled %s items for %s EMC.",
-  "gui.emc_rs.emc": "EMC: %s"
+  "gui.emc_rs.emc": "EMC: %s",
+  "message.emc_rs.network.table_locked": "EMC extraction is locked. Obtain a Transmutation Table or Transmutation Tablet first."
 }
