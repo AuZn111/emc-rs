@@ -1,6 +1,7 @@
 package com.wintercogs.emcrs.logic;
 
 import com.refinedmods.refinedstorage.api.util.Action;
+import com.wintercogs.emcrs.config.EmcConfig;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -141,6 +142,14 @@ public final class EmcTransactions {
         }
 
         ItemInfo info = ItemInfo.fromStack(stack);
+        if (IEMCProxy.INSTANCE.getValue(info) <= 0L) {
+            // Truly no EMC value: never consume it; let normal RS storage take it.
+            return copyWithSize(stack, size);
+        }
+        if (!EmcConfig.SELL_NBT_ITEMS.get() && stack.hasTag()) {
+            // Preserve enchanted/damaged/custom-NBT items by default.
+            return copyWithSize(stack, size);
+        }
         if (EmcBlacklist.sell().matches(stack)) {
             return copyWithSize(stack, size);
         }

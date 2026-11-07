@@ -1,4 +1,4 @@
-# 发布操作步骤（CurseForge / MC百科）
+﻿# 发布操作步骤（CurseForge / MC百科）
 
 GitHub 仓库与 Release 可以直接由本机 `gh` 完成。CurseForge 和 MC百科需要账号登录，
 当前环境没有它们的 API/登录凭据，因此需要你在浏览器里完成最后的上传/提交（材料已全部准备好）。
@@ -10,9 +10,9 @@ Release：https://github.com/AuZn111/emc-rs/releases
 
 发布物：
 
-- `dist/emc_rs-3.2.1.jar`
+- `dist/emc_rs-3.2.2.jar`
 - `docs/cover.png`
-- `dist/emc_rs-3.2.1-src.zip`（干净源码，不含前置 jar）
+- `dist/emc_rs-3.2.2-src.zip`（干净源码，不含前置 jar）
 
 ## 二、CurseForge
 
@@ -30,11 +30,11 @@ Release：https://github.com/AuZn111/emc-rs/releases
    - `ProjectE` — Required dependency
    - `Refined Storage` — Required dependency
 5. 上传文件：
-   - File：`dist/emc_rs-3.2.1.jar`
-   - Display name：`emc_rs-3.2.1`
+   - File：`dist/emc_rs-3.2.2.jar`
+   - Display name：`emc_rs-3.2.2`
    - Release type：`Release`
    - Game versions：`1.20.1`、`Forge`
-   - Changelog：粘贴 `CHANGELOG.md` 中 3.2.1 的内容。
+   - Changelog：粘贴 `CHANGELOG.md` 中 3.2.2 的内容。
 6. 在 Description/Summary 里保留 **AI-CREATED** 标注。
 7. 提交审核/发布，发布后把 CurseForge 链接补到 README。
 

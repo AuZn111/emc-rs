@@ -14,6 +14,7 @@ public final class EmcConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> BUY_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> SELL_BLACKLIST;
+    public static final ForgeConfigSpec.BooleanValue SELL_NBT_ITEMS;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -32,6 +33,17 @@ public final class EmcConfig {
                 .defineListAllowEmpty("sell", List.<String>of(), o -> o instanceof String);
 
         builder.pop();
+
+        builder.comment("Automation behavior.").push("automation");
+        SELL_NBT_ITEMS = builder
+                .comment(
+                        "If true, items with NBT data (enchantments, damage, custom data, potions, etc.)",
+                        "are also auto-converted to EMC when inserted.",
+                        "Default false: such items are preserved and stored normally in RS."
+                )
+                .define("sellNbtItems", false);
+        builder.pop();
+
         SPEC = builder.build();
     }
 

@@ -5,7 +5,7 @@
 A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forge**.
 
 - Mod ID: `emc_rs`
-- Version: `3.2.1`
+- Version: `3.2.2`
 - License: MIT
 - Requires: ProjectE `1.20.1-PE1.0.1`, Refined Storage `1.12.4`, Forge `47.x`
 - Source: https://github.com/AuZn111/emc-rs
@@ -21,7 +21,13 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 - Items with no EMC value, zero sell value, or in the **sell blacklist** are stored normally in RS.
 - Selling an item for the first time learns it, matching ProjectE's transmutation table behavior.
 
-> **Important:** with an empty sell blacklist, every EMC-valued item inserted into the network becomes EMC. Add machines, storage disks, tools, etc. to `sell` if you want to keep them.
+> **Important:** with an empty sell blacklist, normal EMC-valued items with no NBT are converted to EMC. Items with NBT (enchantments, damage, custom data) are protected by default. Add machines, storage disks, tools, etc. to `sell` if you want to keep ordinary items too.
+
+### NBT / enchantment protection and EMC-less items
+
+- Items with NBT data — enchantments, damage, custom names, potions, etc. — are **not auto-converted by default**; they enter normal RS storage with their NBT intact.
+- Truly EMC-less items are never consumed by the auto-sell storage. They are passed to normal RS storage and require a storage disk/block with free space; the virtual EMC storage does not hold real items.
+- If you explicitly want NBT items auto-converted, set `[automation] sellNbtItems = true`. This will discard enchantments/durability, so it is not recommended.
 
 ### Automatic EMC purchase on extraction
 
@@ -61,7 +67,7 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 
 1. Install Minecraft 1.20.1 + Forge 47.x.
 2. Put these jars in `mods/`:
-   - `emc_rs-3.2.1.jar`
+   - `emc_rs-3.2.2.jar`
    - `refinedstorage-1.12.4.jar`
    - `ProjectE-1.20.1-PE1.0.1.jar`
 3. Launch the game. No new block or item has to be crafted.
@@ -76,6 +82,9 @@ A **blockless ProjectE × Refined Storage bridge** for **Minecraft 1.20.1 / Forg
 [blacklist]
     buy = []
     sell = []
+
+[automation]
+    sellNbtItems = false
 ```
 
 Entries can be item registry names or `#tags`:
@@ -95,6 +104,7 @@ sell = [
 
 - `buy`: items that cannot be purchased with EMC.
 - `sell`: items that are never auto-converted to EMC and are stored normally.
+- `automation.sellNbtItems`: default `false`; if `true`, NBT items (enchantments, damage, etc.) are auto-converted too, losing their NBT.
 - NBT-specific matching is not supported.
 - Restart the game/server after editing.
 
@@ -103,6 +113,8 @@ sell = [
 ## Notes and limitations
 
 - **Single-player focused**: the controller placer (or the first player to click the EMC button) is the network EMC owner. One network uses one owner's knowledge/EMC.
+- NBT items (enchantments, damage, custom data) are preserved in normal RS storage by default.
+- EMC-less items need a real RS storage disk/block with space; otherwise they return to the player.
 - The owner must be online for EMC purchases and automatic selling.
 - Only the player's base EMC is used; EMC inside transmutation-table input slots or Klein Stars is not read.
 - Inserting EMC-valued items into the network converts them automatically unless the sell blacklist protects them.

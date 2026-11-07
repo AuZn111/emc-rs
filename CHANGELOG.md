@@ -2,6 +2,13 @@
 
 All notable changes to EMC × Refined Storage.
 
+## 3.2.2
+
+- Items with NBT data (enchantments, damage, custom data, potions) are no longer auto-converted by default; they are stored normally and keep their NBT.
+- New `[automation] sellNbtItems` option (default `false`) for users who explicitly want NBT items auto-sold.
+- Auto-selling now also checks that the item has an EMC value, so truly EMC-less items are never consumed.
+- EMC-less items are passed to normal RS storage; the network still needs a real storage disk/block with space.
+
 ## 3.2.1
 
 - Added AI-created attribution to the mod metadata, README, release notes and cover.
