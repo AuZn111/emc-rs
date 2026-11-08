@@ -6,6 +6,7 @@ import com.refinedmods.refinedstorage.api.util.Action;
 import com.refinedmods.refinedstorage.api.util.IComparer;
 import com.refinedmods.refinedstorage.apiimpl.network.node.GridNetworkNode;
 import com.refinedmods.refinedstorage.util.NetworkUtils;
+import com.wintercogs.emcrs.config.EmcConfig;
 import com.wintercogs.emcrs.data.EmcNetworkData;
 import com.wintercogs.emcrs.logic.EmcBlacklist;
 import com.wintercogs.emcrs.logic.EmcTransactions;
@@ -49,6 +50,11 @@ public final class EmcNetworkActions {
         BlockPos controllerPos = network.getPosition();
         EmcNetworkData data = EmcNetworkData.get(level);
         UUID owner = data.getOwner(controllerPos);
+
+        if (action == EmcActionPacket.ACTION_LEARN) {
+            learnFromTerminal(player, grid);
+            return;
+        }
 
         if (action == EmcActionPacket.ACTION_REBIND) {
             if (owner != null && !owner.equals(player.getUUID()) && !player.hasPermissions(2)) {
@@ -107,6 +113,52 @@ public final class EmcNetworkActions {
 
         if (!TransmutationGate.canUseEmc(ownerPlayer)) {
             message(player, "message.emc_rs.network.table_locked");
+        }
+    }
+
+    public static void learnFromTerminal(ServerPlayer player, GridNetworkNode grid) {
+        IKnowledgeProvider provider = EmcTransactions.getProvider(player);
+        if (provider == null) {
+            message(player, "message.emc_rs.network.no_provider");
+            return;
+        }
+
+        ItemStack carried = player.containerMenu.getCarried();
+        List<ItemStack> stacks = new ArrayList<>();
+        if (!carried.isEmpty()) {
+            stacks.add(carried.copy());
+        } else {
+            IItemHandler filter = grid.getFilter();
+            for (int i = 0; i < filter.getSlots(); i++) {
+                ItemStack stack = filter.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    ItemStack key = stack.copy();
+                    key.setCount(1);
+                    stacks.add(key);
+                }
+            }
+        }
+
+        int learned = 0;
+        for (ItemStack stack : stacks) {
+            ItemInfo info = ItemInfo.fromStack(stack);
+            if (IEMCProxy.INSTANCE.getValue(info) <= 0L) {
+                continue;
+            }
+            EmcTransactions.learn(provider, player, info);
+            learned++;
+        }
+
+        if (EmcConfig.CONSUME_ON_LEARN.get() && !carried.isEmpty() && learned > 0) {
+            carried.shrink(1);
+            player.containerMenu.setCarried(carried);
+        }
+
+        if (learned > 0) {
+            player.displayClientMessage(Component.translatable(
+                    "message.emc_rs.network.learned", learned), false);
+        } else {
+            message(player, "message.emc_rs.network.nothing_to_learn");
         }
     }
 
