@@ -1,38 +1,45 @@
-# EMC × Refined Storage 3.4.0
+# EMC × Refined Storage 3.5.0
 
 **AI-created mod** — code, feature design, documentation and cover art were created and implemented by AI.
 
 Blockless **ProjectE × Refined Storage** bridge for **Minecraft 1.20.1 / Forge**.
 
-## New in 3.4.0: unlock catch-up settlement
+## New in 3.5.0: Learning panel + craft auto-learn
 
-When the owner first obtains a **Transmutation Table** or **Transmutation Tablet** and unlocks the EMC shop, the network's **real stored stock** is scanned once and eligible items are automatically converted into EMC.
+### Learning Bar
 
-- Default `[progression] convertExistingStock = true`.
-- Only real RS storage is settled; virtual EMC-shop entries are ignored.
-- Skips:
-  - `sell` blacklist items;
-  - items with NBT (enchantments, damage, potions, custom data);
-  - items with no EMC value;
-  - the Transmutation Table / Tablet itself.
-- Runs once per network/owner; repeating ticks do not duplicate the conversion.
-- Sends the owner a chat message with the converted item count and EMC gained.
+- A new **Learning Bar** side button appears in the left function bar of RS terminals.
+- Clicking it expands a ProjectE-style learned-item panel:
+  - learned item grid;
+  - search box;
+  - mouse-wheel scrolling;
+  - item tooltips.
+- **Record Cursor Item** button:
+  - with an item on the cursor: records it into ProjectE knowledge;
+  - with an empty cursor: records the terminal's four filter-slot items.
+- Default: **no item consumption and no EMC granted** — only knowledge is recorded.
+- `[learning] consumeOnLearn = true` makes the cursor-record consume one item.
 
-### Test result
+### Craft auto-learn
+
+- Taking a result from an **RS crafting terminal** (single or Shift crafting) records the crafted output into ProjectE knowledge once.
+- The output is not consumed again and no EMC is granted.
+- **Automatic crafting tasks** do not pass through a player, so they do not trigger this.
+
+### Verified
 
 ```
-before[iron=2, sword=2, table=1, emc=10000]
-sold=2
-after[iron=0, sword=2, table=1, emc=10512]
-soldAgain=0, emcAgain=10512
+result=oak_planks craftLearned=true filterLearned=true learnOnCraft=true
 ```
 
-The two iron ingots were converted, the enchanted swords and the table were preserved, and a second catch-up converted nothing.
+- Crafting oak planks from an oak log recorded the output.
+- The learning action recorded a filter-slot diamond.
+- `learnOnCraft=true`.
 
 ## Existing behavior retained
 
 - **Transmutation Table/Tablet progression gate (3.3.0):** no EMC shop or EMC extraction before the table/tablet is obtained.
-- **No-table insert behavior:** by default records knowledge and stores normally; no EMC is produced.
+- **Catch-up settlement (3.4.0):** first unlock converts eligible real network stock once.
 - **NBT/enchantment protection (3.2.2):** NBT items are not auto-sold by default.
 - **EMC-less items:** never consumed; passed to normal RS storage.
 - **Live EMC balance + incremental quantity sync (3.2.0/3.1.0):** stable item IDs and reliable extraction.
@@ -52,22 +59,22 @@ Put the mod jar and the two required mods in `mods/`. No new block or item has t
 
 ## Notes
 
-- Catch-up settlement respects the sell blacklist and NBT protection. Protect anything you want to keep with `sell`.
+- The learning panel is a viewer/record panel for learned items; it does not replace the Transmutation Table's actual transmutation slots.
+- Records respect ProjectE knowledge; items without an EMC value are ignored.
 - Real EMC-less/NBT items still need a real RS storage disk/block with free space.
 - Single-player focused; one network uses one owner's ProjectE knowledge/EMC.
-- The owner must be online for catch-up, buying and selling.
-- The EMC button is only added to block RS terminals.
 - Items only; no fluid support.
 - Source: https://github.com/AuZn111/emc-rs
 - License: MIT.
 
 ## Changes
 
-- 3.4.0: one-time catch-up settlement of real network stock on first unlock; new `convertExistingStock` option.
+- 3.5.0: learned-item learning panel; record cursor/filter items; automatic learning of RS crafting-terminal output.
+- 3.4.0: one-time catch-up settlement of real network stock on first unlock.
 - 3.3.0: Transmutation Table/Tablet progression gate; no-table inserts only record + store by default.
-- 3.2.2: NBT/enchantment protection by default; EMC-value check prevents consuming EMC-less items.
+- 3.2.2: NBT/enchantment protection; EMC-value check prevents consuming EMC-less items.
 - 3.2.1: AI attribution in metadata/docs/cover.
-- 3.2.0: virtual quantities sync incrementally via RS item-delta messages; stable UUIDs.
-- 3.1.0: live EMC balance label in RS terminals.
+- 3.2.0: virtual quantities sync incrementally; stable UUIDs.
+- 3.1.0: live EMC balance label.
 - 3.0.1: stopped rebuilding the cache on every EMC change.
 - 3.0.0: blockless automatic EMC buy/sell network storage.
