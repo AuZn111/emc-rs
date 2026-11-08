@@ -4,7 +4,7 @@
 >
 > 本模组的代码、功能设计、文档与封面均由 **AI 创作并实现**。
 >
-> 当前版本：**3.4.0** ｜ Minecraft **1.20.1** ｜ Forge **47.x** ｜ 前置：ProjectE、Refined Storage
+> 当前版本：**3.5.0** ｜ Minecraft **1.20.1** ｜ Forge **47.x** ｜ 前置：ProjectE、Refined Storage
 
 ## 一句话介绍
 
@@ -20,7 +20,7 @@
 | 英文名称 | EMC × Refined Storage |
 | Mod ID | `emc_rs` |
 | 作者 | EMC-RS Team（AI 创作） |
-| 当前版本 | 3.4.0 |
+| 当前版本 | 3.5.0 |
 | 支持版本 | Minecraft 1.20.1 |
 | 运行环境 | Forge 47.x |
 | 前置模组 | ProjectE 1.20.1-PE1.0.1、Refined Storage 1.12.4 |
@@ -82,6 +82,16 @@
 - 跳过：`sell` 黑名单、带 NBT 的物品、无 EMC 物品、转化桌/平板本身、纯虚拟 EMC 商品。
 - 每个网络/主人只补结算一次；重复 tick 不会重复扣物品，重启后重新扫描也不会重复产生 EMC。
 
+#### 3.5.0：学习栏 / 合成自动学习
+
+- RS 终端左侧功能栏新增 **“学习栏”** 按钮。
+- 点击展开仿照转化桌左侧学习列表的界面：
+  - 已学习物品网格、搜索框、滚轮翻页、物品提示；
+  - 界面内“记录光标物品”按钮：把手上的物品放在光标上点击即可记录；光标为空时记录右侧 4 个过滤槽物品。
+- 默认**不消耗物品、不给 EMC**，只记录知识；`[learning] consumeOnLearn` 可改为消耗光标物品。
+- RS 合成终端手动合成（含 Shift 连续合成）取产物时，自动记录一次产物知识；不额外消耗、不给 EMC。
+- 自动合成任务不经过玩家，不会触发。
+
 ### 4. 附魔 / NBT 保护（3.2.2 起）
 
 - 默认**不会**自动回收带 NBT 的物品：
@@ -121,7 +131,7 @@
 
 ## 使用流程（单人）
 
-1. 安装 Forge 1.20.1、ProjectE、Refined Storage，把 `emc_rs-3.4.0.jar` 放入 `mods/`。
+1. 安装 Forge 1.20.1、ProjectE、Refined Storage，把 `emc_rs-3.5.0.jar` 放入 `mods/`。
 2. 正常放置 RS 控制器，接上 RS 终端和**真实存储盘/存储块**。
 3. 控制器由你放置时会自动成为网络 EMC 主人；否则打开方块终端点一次 EMC 按钮绑定。
 4. **未获得转化桌/便携转化桌时：**
@@ -152,6 +162,10 @@
     requireTransmutationTable = true
     convertWithoutTable = false
     convertExistingStock = true
+
+[learning]
+    learnOnCraft = true
+    consumeOnLearn = false
 ```
 
 ### 选项说明
@@ -164,6 +178,8 @@
 | `progression.requireTransmutationTable` | true | 未获得转化桌/平板时锁定 EMC 取出 |
 | `progression.convertWithoutTable` | false | 未获得桌子时存入只学习+存储，不产 EMC；true 则仍自动转 EMC 但仍不能取出 |
 | `progression.convertExistingStock` | true | 首次解锁时一次性结算网络里已存的真实物品 |
+| `learning.learnOnCraft` | true | 从 RS 合成终端取产物时记录一次知识 |
+| `learning.consumeOnLearn` | false | 学习栏记录光标物品时是否消耗 1 个 |
 
 修改后需要重启游戏/服务器。
 
@@ -210,11 +226,11 @@
 
 ---
 
-## 版本 3.4.0 更新摘要
+## 版本 3.5.0 更新摘要
 
-- 新增“获得转化桌后自动补结算旧库存”：首次解锁扫描网络真实库存，把符合规则的物品一次性转成 EMC。
-- 跳过 sell 黑名单、NBT 物品、无 EMC 物品和转化桌/平板本身；每个网络/主人只结算一次。
-- 保留 3.3.0 的转化桌进度门槛、3.2.2 的附魔/NBT 保护、3.2.0 的 EMC 余额与数量同步。
+- 新增“学习栏”侧边按钮：展开仿转化桌左侧学习列表的已学习物品界面，支持搜索、滚动和记录光标物品。
+- RS 合成终端手动合成取产物时自动记录一次产物知识；默认不消耗、不给 EMC。
+- 保留 3.4.0 的旧库存补结算、3.3.0 的进度门槛、3.2.2 的附魔/NBT 保护、3.2.0 的 EMC 余额与数量同步。
 
 ---
 
