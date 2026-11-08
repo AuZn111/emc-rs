@@ -8,7 +8,7 @@
 一个面向 **Minecraft 1.20.1 / Forge** 的 **等价交换（ProjectE）× 精致存储（Refined Storage）** 联动模组。
 
 - Mod ID：`emc_rs`
-- 当前版本：`3.4.0`
+- 当前版本：`3.5.0`
 - 前置：ProjectE `1.20.1-PE1.0.1`、Refined Storage `1.12.4`、Forge `47.x`
 - 许可证：MIT
 - 下载：[GitHub Releases](https://github.com/AuZn111/emc-rs/releases)
@@ -56,6 +56,19 @@
   - 已完成 ProjectE 对应进度。
 - 解锁按玩家 UUID 记录，之后放置/丢失桌子不会重新锁定。
 
+#### 学习栏：展开转化桌学习列表（3.5.0）
+
+- RS 终端左侧功能栏新增 **“学习栏”** 按钮。
+- 点击后展开仿照转化桌左侧学习列表的界面：
+  - 已学习物品网格
+  - 搜索框
+  - 鼠标滚轮翻页
+  - 物品提示
+- 界面内有 **“记录光标物品”** 按钮：把物品拿在光标上，点击记录进转化桌知识；光标为空时记录右侧 4 个过滤槽里的物品。
+- 默认**不消耗物品、不给 EMC**，只记录知识；可在 `[learning] consumeOnLearn` 改成消耗光标物品。
+- **RS 合成终端手动合成（含 Shift 连续合成）取产物时，会自动记录一次产物知识**；不额外消耗产物、不给 EMC。
+- 自动合成任务不经过玩家，不会触发该学习。
+
 #### 获得桌子后自动补结算旧库存（3.4.0）
 
 - 玩家首次获得转化桌/便携转化桌并解锁时，会扫描该网络的**真实库存**，把符合条件的已存物品**一次性转成 EMC**。
@@ -90,7 +103,7 @@
 
 1. 安装 Minecraft 1.20.1 + Forge 47.x。
 2. 将以下文件放入 `mods/`：
-   - `emc_rs-3.4.0.jar`
+   - `emc_rs-3.5.0.jar`
    - `refinedstorage-1.12.4.jar`
    - `ProjectE-1.20.1-PE1.0.1.jar`
 3. 启动游戏，不需要合成任何新方块。
@@ -123,6 +136,10 @@
     requireTransmutationTable = true
     convertWithoutTable = false
     convertExistingStock = true
+
+[learning]
+    learnOnCraft = true
+    consumeOnLearn = false
 ```
 
 条目支持物品注册名或 `#tag`：
@@ -148,6 +165,8 @@ sell = [
 - `progression.requireTransmutationTable`：默认 `true`；未获得转化桌/便携转化桌时锁定 EMC 取出。
 - `progression.convertWithoutTable`：默认 `false`；未获得桌子时存入只学习+存储、不产 EMC。设为 `true` 则仍自动转 EMC，但仍不能用 EMC 取出。
 - `progression.convertExistingStock`：默认 `true`；首次解锁时一次性结算网络里已存的真实物品。
+- `learning.learnOnCraft`：默认 `true`；从 RS 合成终端取产物时记录一次知识。
+- `learning.consumeOnLearn`：默认 `false`；学习栏记录光标物品时不消耗；设为 `true` 才会消耗 1 个光标物品。
 - 只支持物品 ID / 标签，不支持按 NBT 精确匹配。
 - 修改后需要重启游戏/服务器生效。
 
@@ -163,6 +182,7 @@ sell = [
 - **自动回收会拦截网络插入**：请先把不想被回收的物品加入 `sell` 黑名单；带 NBT 的物品默认受保护。
 - **进度门槛**：未获得转化桌/便携转化桌时不能用 EMC 取出；默认存入只记录知识并正常存储，不产 EMC。
 - **旧库存补结算**：首次解锁会一次性把网络真实库存中符合条件的物品转成 EMC；受 sell 黑名单和 NBT 保护限制。
+- **学习栏**：左侧学习按钮展开已学习物品界面；RS 手动合成取产物自动记录知识，默认不消耗、不给 EMC。
 - **无 EMC 物品需要真实 RS 存储**：网络里必须有存储盘/存储块且有空间，否则物品会弹回背包。
 - **EMC 按钮只加在方块 RS 终端上**；便携/无线终端仍能看到虚拟物品并按 EMC 取出，但没有按钮。
 - 只处理物品，不处理流体。
@@ -187,7 +207,7 @@ gradlew.bat build
 
 详见 [libs/README.md](libs/README.md)。
 
-产物：`build/libs/emc_rs-3.4.0.jar`。
+产物：`build/libs/emc_rs-3.5.0.jar`。
 
 ---
 
