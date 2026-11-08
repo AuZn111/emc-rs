@@ -4,6 +4,7 @@
   "package": "com.wintercogs.emcrs.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "GridNetworkNodeMixin",
     "ItemStorageCacheMixin",
     "NetworkMixin",
     "RootNetworkNodeMixin"
