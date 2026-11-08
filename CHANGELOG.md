@@ -2,6 +2,20 @@
 
 All notable changes to EMC × Refined Storage.
 
+## 3.5.1
+
+### Changed
+
+- The **Learning Bar** side button now opens the **actual ProjectE Transmutation Table interface** (left 8-slot input circle / learning area, right learned-item outputs), matching the table GUI exactly.
+- The 3.5.0 custom learned-item list and its "Record Cursor Item" action were removed; they were not the table's learning interface.
+- The table interface requires the player to have unlocked the table gate; otherwise it shows the usual lock message.
+- `[learning] consumeOnLearn` was removed (the actual table handles item consumption normally).
+
+### Kept
+
+- RS crafting-terminal manual/Shift crafting auto-learns the output once (`[learning] learnOnCraft = true`).
+- Automatic crafting tasks still do not trigger learning.
+
 ## 3.5.0
 
 ### Added
