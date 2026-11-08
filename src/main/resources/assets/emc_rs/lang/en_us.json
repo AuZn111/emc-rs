@@ -17,15 +17,7 @@
   "gui.emc_rs.emc": "EMC: %s",
   "message.emc_rs.network.table_locked": "EMC extraction is locked. Obtain a Transmutation Table or Transmutation Tablet first.",
   "message.emc_rs.network.catch_up": "Auto-converted %s stored items into %s EMC.",
-  "sidebutton.emc_rs.learn": "Learning Bar",
-  "sidebutton.emc_rs.learn.hint": "Click: open the learned-item panel. Use its record button to record the cursor or filter-slot items.",
-  "message.emc_rs.network.learned": "Recorded %s item(s) into ProjectE knowledge.",
-  "message.emc_rs.network.nothing_to_learn": "Nothing to record: hold an EMC-valued item on the cursor or put it in a filter slot.",
-  "gui.emc_rs.learn.title": "Learning / Transmutation Knowledge",
-  "gui.emc_rs.learn.search": "Search",
-  "gui.emc_rs.learn.search_hint": "Search learned items...",
-  "gui.emc_rs.learn.count": "Learned: %s",
-  "gui.emc_rs.learn.empty": "No learned items recorded yet.",
-  "gui.emc_rs.learn.record": "Record Cursor Item",
-  "gui.emc_rs.learn.refresh": "Refresh"
+  "sidebutton.emc_rs.learn": "Learning Table",
+  "sidebutton.emc_rs.learn.hint": "Click: open the ProjectE Transmutation Table learning interface.",
+  "gui.emc_rs.learn.title": "Transmutation Table"
 }
