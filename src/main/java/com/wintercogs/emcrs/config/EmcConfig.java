@@ -18,6 +18,8 @@ public final class EmcConfig {
     public static final ForgeConfigSpec.BooleanValue REQUIRE_TRANSMUTATION_TABLE;
     public static final ForgeConfigSpec.BooleanValue CONVERT_WITHOUT_TABLE;
     public static final ForgeConfigSpec.BooleanValue CONVERT_EXISTING_STOCK;
+    public static final ForgeConfigSpec.BooleanValue LEARN_ON_CRAFT;
+    public static final ForgeConfigSpec.BooleanValue CONSUME_ON_LEARN;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -69,6 +71,21 @@ public final class EmcConfig {
                         "Respects sell-blacklist, NBT protection, no-EMC items and protects the table/tablet itself."
                 )
                 .define("convertExistingStock", true);
+        builder.pop();
+
+        builder.comment("Learning / knowledge recording.").push("learning");
+        LEARN_ON_CRAFT = builder
+                .comment(
+                        "If true, taking a crafting result from an RS crafting terminal records the output",
+                        "into the player's ProjectE knowledge once (no extra item is consumed and no EMC is given)."
+                )
+                .define("learnOnCraft", true);
+        CONSUME_ON_LEARN = builder
+                .comment(
+                        "If true, the learning bar consumes one item from the player's cursor when recording it.",
+                        "Filter-slot items are ghost entries and are never consumed. Default false."
+                )
+                .define("consumeOnLearn", false);
         builder.pop();
 
         SPEC = builder.build();
