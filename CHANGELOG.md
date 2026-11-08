@@ -2,6 +2,28 @@
 
 All notable changes to EMC × Refined Storage.
 
+## 3.5.0
+
+### Added
+
+- **Learning bar:** a new side button in RS terminals opens a ProjectE-style learned-item panel with search, scrolling and item tooltips.
+  - The panel has a **Record Cursor Item** button; if the cursor is empty it records the terminal's four filter-slot items.
+  - Records are written to ProjectE knowledge without consuming the item or granting EMC by default.
+- **Craft auto-learn:** taking a result from an RS crafting terminal (single or Shift crafting) records the crafted output into ProjectE knowledge once.
+  - The output is not consumed again and no EMC is granted.
+  - Automatic crafting tasks do not pass through a player, so they do not trigger this.
+
+### Config
+
+- `[learning] learnOnCraft` (default `true`).
+- `[learning] consumeOnLearn` (default `false`; only affects the learning bar's cursor item).
+
+### Verified
+
+- Crafting oak planks from an oak log recorded the output (`craftLearned=true`).
+- The learning action recorded a filter-slot diamond (`filterLearned=true`).
+- `learnOnCraft=true`.
+
 ## 3.4.0
 
 ### Added
