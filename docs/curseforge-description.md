@@ -2,10 +2,10 @@
 
 **AI-CREATED MOD** — the code, feature design, documentation and cover art of this mod were created and implemented by AI.
 
-**Project summary:** A blockless ProjectE × Refined Storage bridge with automatic EMC buy/sell, live EMC balance, stable quantity sync, NBT/enchantment protection, a Transmutation Table progression gate and one-time catch-up settlement. For Minecraft 1.20.1 / Forge.
+**Project summary:** A blockless ProjectE × Refined Storage bridge with automatic EMC buy/sell, live EMC balance, stable quantity sync, NBT/enchantment protection, a Transmutation Table progression gate, one-time catch-up settlement and a learned-item learning panel. For Minecraft 1.20.1 / Forge.
 
 - Mod ID: `emc_rs`
-- Version: `3.4.0`
+- Version: `3.5.0`
 - License: MIT
 - Minecraft: `1.20.1`
 - Loader: Forge `47.x`
@@ -65,6 +65,14 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
 - Once unlocked, normal automatic EMC buy/sell behavior returns.
 - **Catch-up settlement (3.4.0):** on first unlock, the network's real stored stock is scanned once and eligible items are converted to EMC. Sell-blacklisted, NBT and no-EMC items are skipped; the table/tablet itself is always protected.
 
+### Learning panel and craft auto-learn (3.5.0)
+
+- A new **Learning Bar** side button in RS terminals opens a ProjectE-style learned-item panel with search, scrolling and item tooltips.
+- The panel's **Record Cursor Item** button records the item under the cursor; if the cursor is empty, it records the terminal's four filter-slot items.
+- Records are written to ProjectE knowledge **without consuming the item or granting EMC** by default.
+- Taking a result from an RS crafting terminal (single or Shift crafting) automatically records the crafted output into ProjectE knowledge. Automatic crafting tasks do not trigger this.
+- Config: `[learning] learnOnCraft = true`, `consumeOnLearn = false`.
+
 ### NBT / enchantment protection (3.2.2)
 
 - Items with NBT data — enchantments, damage, custom names, potions, custom data — are **not auto-converted by default**.
@@ -105,7 +113,7 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
 
 1. Install Minecraft 1.20.1 + Forge 47.x.
 2. Put these jars in `mods/`:
-   - `emc_rs-3.4.0.jar`
+   - `emc_rs-3.5.0.jar`
    - `refinedstorage-1.12.4.jar`
    - `ProjectE-1.20.1-PE1.0.1.jar`
 3. Launch the game. No new block or item has to be crafted.
@@ -148,6 +156,10 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
     requireTransmutationTable = true
     convertWithoutTable = false
     convertExistingStock = true
+
+[learning]
+    learnOnCraft = true
+    consumeOnLearn = false
 ```
 
 | Option | Default | Purpose |
@@ -157,6 +169,9 @@ The result is a clean, blockless bridge that feels like a natural part of Refine
 | `automation.sellNbtItems` | false | If true, NBT items are auto-sold too (loses enchantments/durability) |
 | `progression.requireTransmutationTable` | true | Locks EMC extraction until a table/tablet is obtained |
 | `progression.convertWithoutTable` | false | While locked, inserts only learn + store (no EMC); true still converts but extraction stays locked |
+| `progression.convertExistingStock` | true | On first unlock, convert eligible real stored stock once |
+| `learning.learnOnCraft` | true | Record the output when taking a result from an RS crafting terminal |
+| `learning.consumeOnLearn` | false | Learning bar consumes one cursor item when recording |
 
 Entries in blacklists can be item registry names or `#tags`:
 
@@ -202,7 +217,7 @@ The owner has not yet obtained a Transmutation Table or Transmutation Tablet. Th
 
 ### Why did my enchanted item disappear?
 
-On 3.2.1 and older, enchanted items could be auto-sold using their base item value. 3.2.2+ protects all NBT items by default. Check that you are on 3.3.0 and `sellNbtItems = false`.
+On 3.2.1 and older, enchanted items could be auto-sold using their base item value. 3.2.2+ protects all NBT items by default. Check that you are on 3.5.0 and `sellNbtItems = false`.
 
 ### Why don't counts refresh immediately?
 
@@ -216,6 +231,7 @@ Set `progression.requireTransmutationTable = false`. To keep the gate but still 
 
 ## Changelog
 
+- 3.5.0: learning panel; record cursor/filter items; automatic learning of RS crafting-terminal output.
 - 3.4.0: one-time catch-up settlement of real network stock on first unlock; `convertExistingStock` option.
 - 3.3.0: Transmutation Table/Tablet progression gate; no-table inserts only record + store by default; new `[progression]` config; bulk recycle/status respect the gate.
 - **3.2.2**: NBT/enchantment protection by default; EMC-value check prevents consuming EMC-less items; `sellNbtItems` option.
