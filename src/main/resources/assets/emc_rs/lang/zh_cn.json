@@ -18,14 +18,6 @@
   "message.emc_rs.network.table_locked": "EMC 取出已锁定：请先获得转化桌或便携转化桌。",
   "message.emc_rs.network.catch_up": "已将网络库存中的 %s 个物品自动转化为 %s EMC。",
   "sidebutton.emc_rs.learn": "学习栏",
-  "sidebutton.emc_rs.learn.hint": "点击：展开学习栏（转化桌已学习物品）；界面内可记录光标或过滤槽物品。",
-  "message.emc_rs.network.learned": "已记录 %s 个物品到转化桌知识。",
-  "message.emc_rs.network.nothing_to_learn": "没有可记录的物品：请把有 EMC 价值的物品拿在光标上，或放入过滤槽。",
-  "gui.emc_rs.learn.title": "学习栏 / 转化桌知识",
-  "gui.emc_rs.learn.search": "搜索",
-  "gui.emc_rs.learn.search_hint": "搜索已学习物品...",
-  "gui.emc_rs.learn.count": "已学习：%s",
-  "gui.emc_rs.learn.empty": "还没有记录任何已学习物品。",
-  "gui.emc_rs.learn.record": "记录光标物品",
-  "gui.emc_rs.learn.refresh": "刷新"
+  "sidebutton.emc_rs.learn.hint": "点击：打开 ProjectE 转化桌学习界面。",
+  "gui.emc_rs.learn.title": "转化桌"
 }
