@@ -36,12 +36,14 @@ public final class ClientEvents {
         // own onPostInit(), so defer adding the button until BaseScreen's
         // runActions() after init. That places it below the normal side buttons.
         BaseScreen.executeLater(GridScreen.class, screen -> {
-            if (screen.getSideButtons().stream().anyMatch(button -> button instanceof EmcControlSideButton)) {
+            if (screen.getSideButtons().stream().anyMatch(button ->
+                    button instanceof EmcControlSideButton || button instanceof EmcLearnSideButton)) {
                 return;
             }
             IGrid grid = screen.getGrid();
             if (grid instanceof GridNetworkNode gridNode) {
                 screen.addSideButton(new EmcControlSideButton(screen, gridNode.getPos()));
+                screen.addSideButton(new EmcLearnSideButton(screen, gridNode.getPos()));
             }
         });
     }
