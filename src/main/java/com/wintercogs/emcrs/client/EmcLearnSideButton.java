@@ -3,8 +3,9 @@ package com.wintercogs.emcrs.client;
 import com.refinedmods.refinedstorage.screen.BaseScreen;
 import com.refinedmods.refinedstorage.screen.widget.sidebutton.SideButton;
 import com.wintercogs.emcrs.EMCRS;
+import com.wintercogs.emcrs.network.EmcActionPacket;
+import com.wintercogs.emcrs.network.EmcNetworkHandler;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,8 @@ public class EmcLearnSideButton extends SideButton {
 
     @Override
     public void onPress() {
-        Minecraft.getInstance().setScreen(new TransmutationLearningScreen(this.gridPos));
+        EmcNetworkHandler.sendToServer(
+                new EmcActionPacket(this.gridPos, EmcActionPacket.ACTION_OPEN_TABLE));
     }
 
     @Override
