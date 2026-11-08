@@ -10,6 +10,7 @@ public class EmcActionPacket {
     public static final int ACTION_STATUS = 0;
     public static final int ACTION_REBIND = 1;
     public static final int ACTION_BULK_SELL = 2;
+    public static final int ACTION_LEARN = 3;
 
     private final BlockPos gridPos;
     private final int action;
