@@ -6,7 +6,6 @@ import com.refinedmods.refinedstorage.api.util.Action;
 import com.refinedmods.refinedstorage.api.util.IComparer;
 import com.refinedmods.refinedstorage.apiimpl.network.node.GridNetworkNode;
 import com.refinedmods.refinedstorage.util.NetworkUtils;
-import com.wintercogs.emcrs.config.EmcConfig;
 import com.wintercogs.emcrs.data.EmcNetworkData;
 import com.wintercogs.emcrs.logic.EmcBlacklist;
 import com.wintercogs.emcrs.logic.EmcTransactions;
@@ -15,12 +14,15 @@ import com.wintercogs.emcrs.storage.NetworkEmcBuyStorage;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -51,8 +53,8 @@ public final class EmcNetworkActions {
         EmcNetworkData data = EmcNetworkData.get(level);
         UUID owner = data.getOwner(controllerPos);
 
-        if (action == EmcActionPacket.ACTION_LEARN) {
-            learnFromTerminal(player, grid);
+        if (action == EmcActionPacket.ACTION_OPEN_TABLE) {
+            openTransmutationTable(player);
             return;
         }
 
@@ -116,50 +118,17 @@ public final class EmcNetworkActions {
         }
     }
 
-    public static void learnFromTerminal(ServerPlayer player, GridNetworkNode grid) {
-        IKnowledgeProvider provider = EmcTransactions.getProvider(player);
-        if (provider == null) {
-            message(player, "message.emc_rs.network.no_provider");
+    private static void openTransmutationTable(ServerPlayer player) {
+        if (TransmutationGate.isGateEnabled() && !TransmutationGate.canUseEmc(player)) {
+            message(player, "message.emc_rs.network.table_locked");
             return;
         }
-
-        ItemStack carried = player.containerMenu.getCarried();
-        List<ItemStack> stacks = new ArrayList<>();
-        if (!carried.isEmpty()) {
-            stacks.add(carried.copy());
-        } else {
-            IItemHandler filter = grid.getFilter();
-            for (int i = 0; i < filter.getSlots(); i++) {
-                ItemStack stack = filter.getStackInSlot(i);
-                if (!stack.isEmpty()) {
-                    ItemStack key = stack.copy();
-                    key.setCount(1);
-                    stacks.add(key);
-                }
-            }
-        }
-
-        int learned = 0;
-        for (ItemStack stack : stacks) {
-            ItemInfo info = ItemInfo.fromStack(stack);
-            if (IEMCProxy.INSTANCE.getValue(info) <= 0L) {
-                continue;
-            }
-            EmcTransactions.learn(provider, player, info);
-            learned++;
-        }
-
-        if (EmcConfig.CONSUME_ON_LEARN.get() && !carried.isEmpty() && learned > 0) {
-            carried.shrink(1);
-            player.containerMenu.setCarried(carried);
-        }
-
-        if (learned > 0) {
-            player.displayClientMessage(Component.translatable(
-                    "message.emc_rs.network.learned", learned), false);
-        } else {
-            message(player, "message.emc_rs.network.nothing_to_learn");
-        }
+        NetworkHooks.openScreen(player,
+                new SimpleMenuProvider(
+                        (windowId, playerInventory, ignored) ->
+                                new TransmutationContainer(windowId, playerInventory),
+                        Component.translatable("gui.emc_rs.learn.title")),
+                buffer -> buffer.writeBoolean(false));
     }
 
     private static void bulkSell(ServerPlayer player, ServerLevel level, INetwork network,
